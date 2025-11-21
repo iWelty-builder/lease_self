@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 @MapperScan("com.atguigu.lease.web.*.mapper")
+//@MapperScan({"com.atguigu.lease.web.app.mapper", "com.atguigu.lease.web.admin.mapper"})
 public class MybatisPlusConfiguration {
 
 }
