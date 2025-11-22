@@ -17,7 +17,7 @@ import java.util.List;
 public class LeaseTermController {
 
     @Autowired
-    LeaseTermService service;
+    private LeaseTermService service;
 
 
     @GetMapping("list")

@@ -18,7 +18,7 @@ import java.util.List;
 public class PaymentTypeController {
 
     @Autowired
-    PaymentTypeService service;
+    private PaymentTypeService service;
 
     @Operation(summary = "查询全部支付方式列表")
     @GetMapping("list")
