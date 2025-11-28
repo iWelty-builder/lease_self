@@ -14,6 +14,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import kotlin.jvm.internal.Lambda;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,6 +23,7 @@ import org.springframework.util.CollectionUtils;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Spliterator;
 
 /**
  * @author liubo
@@ -157,6 +159,28 @@ public class ApartmentInfoServiceImpl extends ServiceImpl<ApartmentInfoMapper, A
         apartmentDetailVo.setFeeValueVoList(feeValueVoList);
         //Return the constructed result object
         return apartmentDetailVo;
+    }
+
+    @Override
+    public void removeApartmentInfoById(Long id) {
+        super.removeById(id);
+        //delete graph info
+        LambdaQueryWrapper<GraphInfo> graphWrapper = new LambdaQueryWrapper<>();
+        graphWrapper.eq(GraphInfo::getItemType,ItemType.APARTMENT);
+        graphWrapper.eq(GraphInfo::getItemId,id);
+        graphInfoService.remove(graphWrapper);
+        //delete label list
+        LambdaQueryWrapper<ApartmentLabel> labelWrapper = new LambdaQueryWrapper<>();
+        labelWrapper.eq(ApartmentLabel::getApartmentId,id);
+        apartmentLabelService.remove(labelWrapper);
+        //delete facility list
+        LambdaQueryWrapper<ApartmentFacility> facilityWrapper = new LambdaQueryWrapper<>();
+        facilityWrapper.eq(ApartmentFacility::getApartmentId,id);
+        apartmentFacilityService.remove(facilityWrapper);
+        //delete fee value list
+        LambdaQueryWrapper<ApartmentFeeValue> feeValueWrapper = new LambdaQueryWrapper<>();
+        feeValueWrapper.eq(ApartmentFeeValue::getApartmentId,id);
+        apartmentFeeValueService.remove(feeValueWrapper);
     }
 }
 
