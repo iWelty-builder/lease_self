@@ -1,5 +1,7 @@
 package com.atguigu.lease.web.admin.service.impl;
 
+import com.atguigu.lease.common.exception.LeaseException;
+import com.atguigu.lease.common.result.ResultCodeEnum;
 import com.atguigu.lease.model.entity.*;
 import com.atguigu.lease.model.enums.ItemType;
 import com.atguigu.lease.web.admin.mapper.*;
@@ -52,6 +54,8 @@ public class ApartmentInfoServiceImpl extends ServiceImpl<ApartmentInfoMapper, A
     private FeeValueMapper feeValueMapper;
     @Autowired
     private FacilityInfoMapper facilityInfoMapper;
+    @Autowired
+    private RoomInfoMapper roomInfoMapper;
 
     @Override
     public void saveOrUpdateApartment(ApartmentSubmitVo apartmentSubmitVo) {
@@ -163,6 +167,13 @@ public class ApartmentInfoServiceImpl extends ServiceImpl<ApartmentInfoMapper, A
 
     @Override
     public void removeApartmentInfoById(Long id) {
+        LambdaQueryWrapper<RoomInfo> roomQueryWrapper = new LambdaQueryWrapper<>();
+        roomQueryWrapper.eq(RoomInfo::getApartmentId, id);
+        Long count = roomInfoMapper.selectCount(roomQueryWrapper);
+        if (count > 0) {
+            //直接为前端返回如下响应：先删除房间信息再删除公寓信息
+            throw new LeaseException(ResultCodeEnum.ADMIN_APARTMENT_DELETE_ERROR);
+        }
         super.removeById(id);
         //delete graph info
         LambdaQueryWrapper<GraphInfo> graphWrapper = new LambdaQueryWrapper<>();
