@@ -5,9 +5,24 @@
 <mapper namespace="com.atguigu.lease.web.admin.mapper.FacilityInfoMapper">
 
     <select id="selectListByApartmentId" resultType="com.atguigu.lease.model.entity.FacilityInfo">
-        select id,type,name,icon
-        from facility_info where is_deleted = 0
-        and id in (select id from apartment_facility where apartment_facility.is_deleted = 0
-                           and apartment_id = #{id})
+        select id, type, name, icon
+        from facility_info
+        where is_deleted = 0
+          and id in (select id
+                     from apartment_facility
+                     where apartment_facility.is_deleted = 0
+                       and apartment_id = #{id})
+    </select>
+    <select id="selectListByRoomId" resultType="com.atguigu.lease.model.entity.FacilityInfo">
+        select fi.id,
+               fi.type,
+               fi.name,
+               fi.icon
+        from facility_info fi
+        where is_deleted = 0
+          and id in (select id
+                     from room_facility rf
+                     where rf.is_deleted = 0
+                       and rf.room_id = #{id})
     </select>
 </mapper>

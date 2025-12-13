@@ -13,4 +13,12 @@
             where apartment_label.is_deleted =0 and apartment_id = #{id}
             ) and is_deleted = 0
     </select>
+    <select id="selectListByRoomId" resultType="com.atguigu.lease.model.entity.LabelInfo">
+        select li.id,
+               li.type,
+               li.name
+        from label_info li
+        where li.is_deleted = 0
+          and id in (select label_id from room_label rl where rl.is_deleted = 0 and rl.room_id = #{id})
+    </select>
 </mapper>
