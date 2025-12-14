@@ -22,6 +22,7 @@ import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.WeakHashMap;
 
 /**
  * @author liubo
@@ -209,6 +210,36 @@ public class RoomInfoServiceImpl extends ServiceImpl<RoomInfoMapper, RoomInfo>
         roomDetailVo.setPaymentTypeList(paymentTypeList);
         roomDetailVo.setLeaseTermList(leaseTermList);
         return roomDetailVo;
+    }
+
+    @Override
+    public void removeRoomInfoById(Long id) {
+        super.removeById(id);
+        //remove graph list
+        LambdaQueryWrapper<GraphInfo> graphWrapper = new LambdaQueryWrapper<>();
+        graphWrapper.eq(GraphInfo::getItemType,ItemType.ROOM);
+        graphWrapper.eq(GraphInfo::getItemId,id);
+        graphInfoService.remove(graphWrapper);
+        //remove attr list
+        LambdaQueryWrapper<RoomAttrValue> attrWrapper = new LambdaQueryWrapper<>();
+        attrWrapper.eq(RoomAttrValue::getRoomId,id);
+        roomAttrValueService.remove(attrWrapper);
+        //remove facility info list
+        LambdaQueryWrapper<RoomFacility> facilityWrapper = new LambdaQueryWrapper<>();
+        facilityWrapper.eq(RoomFacility::getRoomId,id);
+        roomFacilityService.remove(facilityWrapper);
+        //remove label info list
+        LambdaQueryWrapper<RoomLabel> labelWrapper = new LambdaQueryWrapper<>();
+        labelWrapper.eq(RoomLabel::getRoomId,id);
+        roomLabelService.remove(labelWrapper);
+        //remove payment type list
+        LambdaQueryWrapper<RoomPaymentType> paymentTypeWrapper = new LambdaQueryWrapper<>();
+        paymentTypeWrapper.eq(RoomPaymentType::getRoomId,id);
+        roomPaymentTypeService.remove(paymentTypeWrapper);
+        //remove lease term wrapper
+        LambdaQueryWrapper<RoomLeaseTerm> leaseTermWrapper = new LambdaQueryWrapper<>();
+        leaseTermWrapper.eq(RoomLeaseTerm::getRoomId,id);
+        roomLeaseTermService.remove(leaseTermWrapper);
     }
 
 }

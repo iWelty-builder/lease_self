@@ -9,6 +9,8 @@ import com.atguigu.lease.web.admin.vo.room.RoomDetailVo;
 import com.atguigu.lease.web.admin.vo.room.RoomItemVo;
 import com.atguigu.lease.web.admin.vo.room.RoomQueryVo;
 import com.atguigu.lease.web.admin.vo.room.RoomSubmitVo;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.swagger.v3.oas.annotations.Operation;
@@ -51,19 +53,28 @@ public class RoomController {
     @Operation(summary = "根据id删除房间信息")
     @DeleteMapping("removeById")
     public Result removeById(@RequestParam Long id) {
+        service.removeRoomInfoById(id);
         return Result.ok();
     }
 
     @Operation(summary = "根据id修改房间发布状态")
     @PostMapping("updateReleaseStatusById")
     public Result updateReleaseStatusById(Long id, ReleaseStatus status) {
+        LambdaUpdateWrapper<RoomInfo> updateWrapper = new LambdaUpdateWrapper<>();
+        updateWrapper.eq(RoomInfo::getId,id);
+        updateWrapper.set(RoomInfo::getIsRelease,status);
+        service.update(updateWrapper);
         return Result.ok();
     }
 
     @GetMapping("listBasicByApartmentId")
     @Operation(summary = "根据公寓id查询房间列表")
     public Result<List<RoomInfo>> listBasicByApartmentId(Long id) {
-        return Result.ok();
+        LambdaQueryWrapper<RoomInfo> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(RoomInfo::getApartmentId,id);
+        queryWrapper.eq(RoomInfo::getIsRelease,ReleaseStatus.RELEASED);
+        List<RoomInfo> result = service.list(queryWrapper);
+        return Result.ok(result);
     }
 
 }
