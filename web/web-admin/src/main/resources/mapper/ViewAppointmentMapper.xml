@@ -56,9 +56,10 @@
                   ai.is_release
            from view_appointment va
                        left join apartment_info ai
-                                 on va.apartment_id = ai.id and ai.is_deleted = 0 and va.is_deleted = 0
+                                 on va.apartment_id = ai.id and ai.is_deleted = 0
 #                                                                                          Don't write ; in .xml file
         <where>
+            va.is_deleted = 0
             <if test="queryVo.provinceId != null">
                and ai.province_id = #{queryVo.provinceId}
             </if>
@@ -72,10 +73,10 @@
                and va.apartment_id = #{queryVo.apartmentId}
             </if>
             <if test="queryVo.name != null and queryVo.name != ''">
-               and va.name = #{queryVo.name}
+               and va.name like concat('%',#{queryVo.name},'%')
             </if>
             <if test="queryVo.phone != null and queryVo.phone != ''">
-               and va.phone = #{queryVo.phone}
+               and va.phone like concat('%',#{queryVo.phone},'%')
             </if>
         </where>
     </select>
