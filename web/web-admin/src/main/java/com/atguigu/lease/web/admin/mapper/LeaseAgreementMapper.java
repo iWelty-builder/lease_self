@@ -6,6 +6,7 @@ import com.atguigu.lease.web.admin.vo.agreement.AgreementQueryVo;
 import com.atguigu.lease.web.admin.vo.agreement.AgreementVo;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 
 import java.util.List;
 
@@ -18,6 +19,8 @@ import java.util.List;
 public interface LeaseAgreementMapper extends BaseMapper<LeaseAgreement> {
 
     List<LeaseTerm> selectListByRoomId(Long id);
+
+    IPage<AgreementVo> pageAgreementByQuery(Page<AgreementVo> page, AgreementQueryVo queryVo);
 }
 
 
